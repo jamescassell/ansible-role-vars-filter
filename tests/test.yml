@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - vars-filter
+  vars:
+    my_str1: val1
+    my_dict1:
+      a: 1
+      b: 2
+    my_list1:
+    - z
+    - y
+    my_str2: val2
+    my_dict2:
+      c: 3
+      d: 4
+    my_list2:
+    - x
+    - w
+  tasks:
+  - debug:
+      msg: "{{ vars_filter_result }}"
+    vars:
+      vars_filter_regex: ^my_
+      vars_filter_blacklist:
+      - my_list1
+      - my_str1
+      vars_filter_reject_regex: t2$

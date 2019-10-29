@@ -1,0 +1,25 @@
+---
+# vars file for vars-filter
+
+vars_filter_result_keys: >-
+  {{ ansible_vars_keys
+  | select('regex', vars_filter_regex)
+  | reject('regex', vars_filter_reject_regex)
+  | difference(vars_filter_blacklist)
+  | list | sort }}
+vars_filter_result_values: "{{ vars_filter_result_keys | map('extract', ansible_vars) | list }}"
+vars_filter_result: "{{ vars_filter_result_keys | zip(vars_filter_result_values) | dict }}"
+# vars_filter_result_items: "{{ lookup('dict', vars_filter_result, wantlist=True) }}"  # fails before ansible-2.5 because https://github.com/ansible/ansible/pull/32080
+
+vars_filter_regex: .
+vars_filter_blacklist: []
+vars_filter_reject_regex: ^ansible_
+
+vars_filter_remove:
+- vars_filter_result_keys
+- vars_filter_result_values
+- vars_filter_result
+- vars_filter_regex
+- vars_filter_blacklist
+- vars_filter_reject_regex
+- vars_filter_remove
